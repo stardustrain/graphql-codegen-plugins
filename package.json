@@ -4,7 +4,14 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "lint": "gts lint",
+    "clean": "gts clean",
+    "compile": "tsc",
+    "fix": "gts fix",
+    "prepare": "npm run compile",
+    "pretest": "npm run compile",
+    "posttest": "npm run lint"
   },
   "keywords": [],
   "author": "",
@@ -12,6 +19,8 @@
   "devDependencies": {
     "eslint": "^8.49.0",
     "prettier": "^3.0.3",
-    "typescript": "^5.2.2"
+    "typescript": "~5.1.6",
+    "gts": "^5.0.1",
+    "@types/node": "20.4.6"
   }
 }
