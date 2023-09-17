@@ -5,6 +5,11 @@
       "dependsOn": ["^build"]
     },
     "test": {
+      "cache": false,
+      "dependsOn": ["^build"]
+    },
+    "test:plugin": {
+      "cache": false,
       "dependsOn": ["^build"]
     }
   }

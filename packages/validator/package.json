@@ -1,16 +1,29 @@
 {
   "name": "validator",
-  "version": "1.0.0",
+  "version": "0.0.1",
   "description": "",
-  "main": "index.js",
+  "exports": {
+    ".": {
+      "require": "./dist/index.js",
+      "types": "./dist/index.d.ts"
+    }
+  },
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
+    "test": "node --loader ts --test ./src/**/*.test.ts",
+    "test:plugin": "pnpm build && graphql-code-generator --config ./plugin-tests/codegen.ts",
     "build": "tsup --config ./tsup.config.ts"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "devDependencies": {
-    "tsup": "^7.2.0"
+    "@graphql-codegen/cli": "^5.0.0",
+    "tsup": "^7.2.0",
+    "typescript": "~5.1.6"
+  },
+  "dependencies": {
+    "@graphql-codegen/plugin-helpers": "^5.0.1",
+    "@graphql-codegen/visitor-plugin-common": "^4.0.1",
+    "graphql": "^16.8.0"
   }
 }

@@ -1,5 +1,6 @@
 {
   "name": "graphql-codegen-plugins",
+  "private": true,
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
@@ -9,6 +10,7 @@
     "compile": "tsc",
     "fix": "gts fix",
     "test": "turbo test",
+    "test:plugin": "turbo test:plugin",
     "build": "turbo build"
   },
   "keywords": [],
