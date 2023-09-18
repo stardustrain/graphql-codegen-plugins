@@ -1,7 +1,24 @@
 {
   "extends": "./node_modules/gts/",
+  "plugins": ["import"],
   "rules": {
     "node/no-unpublished-import": "off",
-    "@typescript-eslint/consistent-type-imports": "error"
+    "@typescript-eslint/consistent-type-imports": "error",
+    /* eslint-plugin-import */
+    // 모듈 이름 기준(ex) react)으로 알파벳 순서대로 저장.
+    // 상대 경로가 같은 것 끼리 저장.
+    "import/order": [
+      "error",
+      {
+        "groups": ["builtin", "external", ["parent", "sibling"], "index"],
+        // import { render, getByText }  from "@testing-library/react" <- 여기서 알파벳 순서에 따라 getByText가 앞으로 오게 된다.
+        "alphabetize": {
+          "order": "asc",
+          "caseInsensitive": true // 대소문자 구분
+        },
+        "newlines-between": "always" // 구문 마다 공백 추가
+      }
+    ],
+    "import/newline-after-import": ["error", { "count": 1 }] // import 구문 뒤에 공백
   }
 }

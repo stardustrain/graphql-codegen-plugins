@@ -1,8 +1,9 @@
-import type {GraphQLSchema} from 'graphql';
 import {transformSchemaAST} from '@graphql-codegen/schema-ast';
 import type {TypeScriptPluginConfig} from '@graphql-codegen/typescript';
-import {isGeneratedByIntrospection} from './utils/graphql';
+import type {GraphQLSchema} from 'graphql';
 import {buildSchema, printSchema} from 'graphql';
+
+import {isGeneratedByIntrospection} from './utils/graphql';
 
 type GenerateSchemaASTParams = {
   graphqlSchema: GraphQLSchema;

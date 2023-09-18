@@ -7,6 +7,6 @@ export type NewVisitor = Partial<{
 }>;
 
 export interface SchemaVisitor extends NewVisitor {
-  buildImports: () => string[];
-  initialEmit: () => string;
+  buildImports(): string[];
+  initialEmit(): string;
 }
