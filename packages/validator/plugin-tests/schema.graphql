@@ -1,3 +1,7 @@
 type User {
   id: ID!
 }
+
+type Post {
+  title: String
+}

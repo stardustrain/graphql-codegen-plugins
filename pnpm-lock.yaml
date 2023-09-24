@@ -44,7 +44,7 @@ importers:
       graphql:
         specifier: ^16.8.0
         version: 16.8.0
-      lodash-es:
+      lodash:
         specifier: ^4.17.21
         version: 4.17.21
     devDependencies:
@@ -54,9 +54,9 @@ importers:
       '@graphql-codegen/typescript':
         specifier: ^4.0.1
         version: 4.0.1(graphql@16.8.0)
-      '@types/lodash-es':
-        specifier: ^4.17.9
-        version: 4.17.9
+      '@types/lodash':
+        specifier: ^4.14.199
+        version: 4.14.199
       tsup:
         specifier: ^7.2.0
         version: 7.2.0(typescript@5.1.6)
@@ -1489,14 +1489,8 @@ packages:
     resolution: {integrity: sha512-dRLjCWHYg4oaA77cxO64oO+7JwCwnIzkZPdrrC71jQmQtlhM556pwKo5bUzqvZndkVbeFLIIi+9TC40JNF5hNQ==}
     dev: true
 
-  /@types/lodash-es@4.17.9:
-    resolution: {integrity: sha512-ZTcmhiI3NNU7dEvWLZJkzG6ao49zOIjEgIE0RgV7wbPxU0f2xT3VSAHw2gmst8swH6V0YkLRGp4qPlX/6I90MQ==}
-    dependencies:
-      '@types/lodash': 4.14.198
-    dev: true
-
-  /@types/lodash@4.14.198:
-    resolution: {integrity: sha512-trNJ/vtMZYMLhfN45uLq4ShQSw0/S7xCTLLVM+WM1rmFpba/VS42jVUgaO3w/NOLiWR/09lnYk0yMaA/atdIsg==}
+  /@types/lodash@4.14.199:
+    resolution: {integrity: sha512-Vrjz5N5Ia4SEzWWgIVwnHNEnb1UE1XMkvY5DGXrAeOGE9imk0hgTHh5GyDjLDJi9OTCn9oo9dXH1uToK1VRfrg==}
     dev: true
 
   /@types/minimist@1.2.2:
@@ -3759,10 +3753,6 @@ packages:
     dependencies:
       p-locate: 5.0.0
     dev: true
-
-  /lodash-es@4.17.21:
-    resolution: {integrity: sha512-mKnC+QJ9pWVzv+C4/U3rRsHapFfHvQFoFB92e52xeyGMcX6/OlIl78je1u8vePzYZSkkogMPJ2yjxxsb89cxyw==}
-    dev: false
 
   /lodash.merge@4.6.2:
     resolution: {integrity: sha512-0KpjqXRVvrYyCsX1swR/XTK0va6VQkQM6MNo7PqW77ByjAhoARA8EfrP1N4+KlKj8YS0ZUCtRT/YUuhyYDujIQ==}

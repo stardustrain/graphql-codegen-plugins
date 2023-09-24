@@ -2,11 +2,13 @@ import {TsVisitor} from '@graphql-codegen/typescript';
 import {specifiedScalarTypes} from 'graphql';
 import type {
   FieldDefinitionNode,
+  GraphQLNamedType,
   GraphQLSchema,
   NameNode,
   ObjectTypeDefinitionNode,
+  ScalarTypeDefinitionNode,
 } from 'graphql';
-import {isNil} from 'lodash-es';
+import {isNil} from 'lodash';
 
 import type {ValidatorPluginConfig} from '../config';
 
@@ -29,14 +31,20 @@ export class Visitor extends TsVisitor {
     const graphqlNamedType = this.getTypeByName(node.value);
     const astNode = graphqlNamedType?.astNode;
 
-    if (isNil(astNode)) {
-      return undefined;
+    if (this.isPrimitiveType(astNode)) {
+      return null;
     }
 
     return {
       targetKind: astNode.kind,
       convertName: () => this.convertName(astNode.name.value),
     };
+  }
+
+  private isPrimitiveType(
+    astNode?: GraphQLNamedType['astNode']
+  ): astNode is undefined | null {
+    return isNil(astNode);
   }
 
   getScalarType(scalarName: string) {
@@ -67,9 +75,11 @@ export class Visitor extends TsVisitor {
       node.fields?.filter(
         field => field.arguments && field.arguments.length > 0
       ) ?? [];
+
     if (fieldsWithArguments.length === 0) {
       return undefined;
     }
+
     return fieldsWithArguments
       .map(field => {
         const name =
