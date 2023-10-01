@@ -1,7 +1,8 @@
 import {transformSchemaAST} from '@graphql-codegen/schema-ast';
 import type {TypeScriptPluginConfig} from '@graphql-codegen/typescript';
-import type {GraphQLSchema} from 'graphql';
-import {buildSchema, printSchema} from 'graphql';
+import type {DocumentNode, GraphQLSchema} from 'graphql';
+import {Kind, buildSchema, printSchema} from 'graphql';
+import {pullAllBy, cloneDeep} from 'lodash';
 
 import {isGeneratedByIntrospection} from './utils/graphql';
 
@@ -19,8 +20,25 @@ export const generateSchemaAST = ({
     ? buildSchema(printSchema(schema))
     : schema;
 
+  const sortedAST = sortASTNodes(ast);
+
   return {
     graphqlSchema: _schema,
-    ast,
+    ast: sortedAST,
   };
 };
+function sortASTNodes(ast: DocumentNode) {
+  const clonedAST = cloneDeep(ast);
+  const enumDefinitions = clonedAST.definitions.filter(
+    definition => definition.kind === Kind.ENUM_TYPE_DEFINITION
+  );
+
+  /**
+   * @NOTE: Mutate ast.definitions array
+   */
+  pullAllBy(clonedAST.definitions, enumDefinitions);
+  return {
+    ...clonedAST,
+    definitions: [...enumDefinitions, ...clonedAST.definitions],
+  };
+}

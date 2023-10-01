@@ -5,3 +5,16 @@ type User {
 type Post {
   title: String
 }
+
+input PostInput {
+  id: ID!
+  title: String!
+  content: Int
+  type: PostType
+}
+
+enum PostType {
+  POST
+  COMMENT
+  BLOG
+}

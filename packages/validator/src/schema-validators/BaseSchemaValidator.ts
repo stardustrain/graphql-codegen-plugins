@@ -18,7 +18,6 @@ export abstract class BaseSchemaValidator implements SchemaVisitor {
     protected schema: GraphQLSchema,
     protected config: ValidatorPluginConfig
   ) {}
-
   createVisitor(scalarDirection: ScalarDirection) {
     return new Visitor(scalarDirection, this.schema, this.config);
   }
@@ -30,7 +29,7 @@ export abstract class BaseSchemaValidator implements SchemaVisitor {
 
       return [
         this.importValidationSchema(),
-        `import ${importKeyword} { ${importTypes} from '${this.config.importFrom}';`,
+        `import ${importKeyword} { ${importTypes} } from '${this.config.importFrom}';`,
       ];
     }
 
@@ -50,7 +49,6 @@ export abstract class BaseSchemaValidator implements SchemaVisitor {
   /**
    * abstract methods
    */
-  abstract initialEmit(): string;
   protected abstract importValidationSchema(): string;
   protected abstract buildInputFields(
     fields: readonly (FieldDefinitionNode | InputValueDefinitionNode)[],
@@ -72,6 +70,10 @@ export abstract class BaseSchemaValidator implements SchemaVisitor {
 
   protected addTypeToImport(types: string) {
     this.importTypes.push(types);
+  }
+
+  protected addEnumDeclaration(declaration: string) {
+    this.enumDeclarations.push(declaration);
   }
 
   private isRootField(node: ObjectTypeDefinitionNode) {

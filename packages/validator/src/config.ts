@@ -1,7 +1,10 @@
 import type {TypeScriptPluginConfig} from '@graphql-codegen/typescript';
 
 export interface ValidatorPluginConfig extends TypeScriptPluginConfig {
-  validator?: 'yup';
+  /**
+   * @default yup
+   */
+  validator?: 'yup' | 'zod';
   importFrom?: string;
   useTypeImports?: boolean;
   scalarSchemas?: {

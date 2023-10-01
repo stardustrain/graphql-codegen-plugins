@@ -1,20 +1,18 @@
 import {DeclarationBlock, indent} from '@graphql-codegen/visitor-plugin-common';
 import {
+  type EnumTypeDefinitionNode,
   type FieldDefinitionNode,
+  type GraphQLSchema,
   type InputObjectTypeDefinitionNode,
   type InputValueDefinitionNode,
-  type TypeNode,
-  type ObjectTypeDefinitionNode,
-  type GraphQLSchema,
 } from 'graphql';
+import {isNil} from 'lodash';
 
 import {FieldType} from './FieldType';
 import type {ValidatorPluginConfig} from '../../config';
-import {isInput, isNamedType, isNonNullType} from '../../utils/graphql';
+import {isNonNullType} from '../../utils/graphql';
 import type {Visitor} from '../../visitor/Visitor';
 import {BaseSchemaValidator} from '../BaseSchemaValidator';
-
-const INDENT_COUNT = 2;
 
 export class YupSchemaValidator extends BaseSchemaValidator {
   private readonly fieldType: FieldType;
@@ -69,21 +67,71 @@ export class YupSchemaValidator extends BaseSchemaValidator {
           })
           .join(',\n');
 
-        return new DeclarationBlock({})
-          .export()
-          .asKind('const')
-          .withName(`${name}Schema: yup.ObjectSchema<${name}>`)
-          .withContent(
-            [
-              'yup.object({',
-              indent(
-                `__typename: yup.string<'${node.name.value}'>().optional(),`
-              ),
-              shape,
-              '})',
-            ].join('\n')
-          ).string;
+        return (
+          new DeclarationBlock({})
+            .export()
+            .asKind('const')
+            .withName(`${name}Schema: yup.ObjectSchema<${name}>`)
+            .withContent(
+              [
+                'yup.object({',
+                indent(
+                  `__typename: yup.string<'${node.name.value}'>().optional(),`
+                ),
+                shape,
+                '})',
+              ].join('\n')
+            ).string + appendArguments
+        );
       }),
+    };
+  }
+
+  get EnumTypeDefinition() {
+    return {
+      leave: (node: EnumTypeDefinitionNode) => {
+        const visitor = this.createVisitor('output');
+        const name = visitor.convertName(node.name.value);
+        this.addEnumDeclaration(name);
+        const enumName = visitor.getNameNodeConverter(node.name)?.convertName();
+        const enumValues = node.values?.map(value => value.name.value);
+
+        if (isNil(enumName) || isNil(enumValues)) {
+          return '';
+        }
+
+        return [
+          new DeclarationBlock({})
+            .export()
+            .asKind('const enum')
+            .withName(`${enumName}`)
+            .withContent(
+              [
+                '{',
+                enumValues
+                  .map(value => indent(`${value} = '${value}',`))
+                  .join('\n'),
+                '}',
+              ].join('\n')
+            ).string,
+          new DeclarationBlock({})
+            .export()
+            .asKind('const')
+            .withName(`${enumName}Schema`)
+            .withContent(
+              [
+                'yup',
+                indent(`.mixed<${enumName}>()`),
+                indent('.required()'),
+                indent(
+                  `.oneOf([${enumValues
+                    .map(value => `${enumName}.${value}`)
+                    .join(', ')}])`
+                ),
+              ].join('\n')
+            ).string,
+        ].join('\n');
+      },
     };
   }
 
@@ -92,7 +140,16 @@ export class YupSchemaValidator extends BaseSchemaValidator {
     visitor: Visitor,
     name: string
   ): string {
-    throw new Error('Method not implemented.');
+    const shape = fields.map(field => {
+      const schema = this.generateFieldYupSchema({visitor, field});
+      return isNonNullType(field.type) ? `${schema}` : `${schema}.optional()`;
+    });
+
+    return new DeclarationBlock({})
+      .export()
+      .asKind('const')
+      .withName(`${name}Schema: yup.ObjectSchema<${name}>`)
+      .withContent(['yup.object({', shape.join(',\n'), '})'].join('\n')).string;
   }
 
   private generateFieldYupSchema({

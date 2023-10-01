@@ -16,7 +16,7 @@ export const plugin: PluginFunction<ValidatorPluginConfig> = (
     config,
   });
 
-  const visitor = new YupSchemaValidator(graphqlSchema, config);
+  const visitor = getSchemaVisitor(graphqlSchema, config);
   const result = visit(ast, visitor);
 
   return {
@@ -30,4 +30,13 @@ export const plugin: PluginFunction<ValidatorPluginConfig> = (
 const getSchemaVisitor = (
   graphqlSchema: GraphQLSchema,
   config: ValidatorPluginConfig
-) => {};
+) => {
+  const validator = config.validator ?? 'yup';
+
+  switch (validator) {
+    case 'yup':
+      return new YupSchemaValidator(graphqlSchema, config);
+    default:
+      throw new Error(`Unsupported validator: ${validator}`);
+  }
+};

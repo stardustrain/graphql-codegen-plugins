@@ -6,6 +6,12 @@ const config: CodegenConfig = {
   generates: {
     './plugin-tests/output.ts': {
       plugins: ['../../dist/index.js'],
+      config: {
+        validator: 'yup',
+        useTypeImports: true,
+        importFrom: './types.ts',
+        sort: true,
+      },
     },
   },
 };

@@ -1,13 +1,12 @@
 import {TsVisitor} from '@graphql-codegen/typescript';
-import {specifiedScalarTypes} from 'graphql';
 import type {
   FieldDefinitionNode,
   GraphQLNamedType,
   GraphQLSchema,
   NameNode,
   ObjectTypeDefinitionNode,
-  ScalarTypeDefinitionNode,
 } from 'graphql';
+import {specifiedScalarTypes} from 'graphql';
 import {isNil} from 'lodash';
 
 import type {ValidatorPluginConfig} from '../config';
@@ -18,7 +17,7 @@ export class Visitor extends TsVisitor {
   constructor(
     private readonly scalarDirection: ScalarDirection,
     private readonly schema: GraphQLSchema,
-    private readonly pluginConfig: ValidatorPluginConfig
+    pluginConfig: ValidatorPluginConfig
   ) {
     super(schema, pluginConfig);
   }
