@@ -8,20 +8,23 @@ import type {
 } from 'graphql';
 import {isNil} from 'lodash';
 
-import {FieldType} from './FieldType';
+import {maybeLazy} from './utils';
+import {YupFieldTypeSchemaBuilder} from './YupFieldTypeSchemaBuilder';
+import {EnumDeclarationBuilder} from '../../builder/EnumDeclarationBuilder';
 import type {ValidatorPluginConfig} from '../../pluginConfig';
-import {EnumDeclarationBuilder} from '../../utils/EnumDeclarationBuilder';
 import {isNonNullType} from '../../utils/graphql';
 import type {VisitorHelper} from '../../utils/VisitorHelper';
 import {BaseBuilder} from '../BaseBuilder';
 
 export class YupSchemaValidator extends BaseBuilder {
-  private readonly fieldType: FieldType;
   private readonly enumDeclarationBuilder: EnumDeclarationBuilder;
 
   constructor(schema: GraphQLSchema, config: ValidatorPluginConfig) {
-    super(schema, config);
-    this.fieldType = new FieldType({config});
+    super({
+      schema,
+      config,
+      schemaBuilder: new YupFieldTypeSchemaBuilder({config}),
+    });
     this.enumDeclarationBuilder = new EnumDeclarationBuilder();
   }
 
@@ -133,13 +136,11 @@ export class YupSchemaValidator extends BaseBuilder {
     visitor: VisitorHelper;
     field: InputValueDefinitionNode | FieldDefinitionNode;
   }) {
-    const result = this.fieldType.generateYupSchema({
+    const result = this.schemaBuilder.build({
       visitor,
       typeNode: field.type,
     });
 
-    return indent(
-      `${field.name.value}: ${this.fieldType.maybeLazy(field.type, result)}`
-    );
+    return indent(`${field.name.value}: ${maybeLazy(field.type, result)}`);
   }
 }

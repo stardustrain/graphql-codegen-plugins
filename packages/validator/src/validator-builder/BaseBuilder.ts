@@ -8,17 +8,30 @@ import type {
   UnionTypeDefinitionNode,
 } from 'graphql';
 
+import type {BaseFieldTypeSchemaBuilder} from '../builder/BaseFieldTypeSchemaBuilder';
 import type {ValidatorPluginConfig} from '../pluginConfig';
 import type {ScalarDirection} from '../utils/VisitorHelper';
 import {VisitorHelper} from '../utils/VisitorHelper';
 
 export abstract class BaseBuilder {
   protected importTypes: string[] = [];
+  protected readonly schema: GraphQLSchema;
+  protected readonly config: ValidatorPluginConfig;
+  protected readonly schemaBuilder: BaseFieldTypeSchemaBuilder;
 
-  constructor(
-    protected schema: GraphQLSchema,
-    protected config: ValidatorPluginConfig
-  ) {}
+  constructor({
+    schema,
+    config,
+    schemaBuilder,
+  }: {
+    schema: GraphQLSchema;
+    config: ValidatorPluginConfig;
+    schemaBuilder: BaseFieldTypeSchemaBuilder;
+  }) {
+    this.schema = schema;
+    this.config = config;
+    this.schemaBuilder = schemaBuilder;
+  }
 
   createVisitor(scalarDirection: ScalarDirection) {
     return new VisitorHelper(scalarDirection, this.schema, this.config);
