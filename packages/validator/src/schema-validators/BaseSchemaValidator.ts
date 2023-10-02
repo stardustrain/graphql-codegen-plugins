@@ -6,9 +6,9 @@ import type {
 } from 'graphql';
 
 import type {ValidatorPluginConfig} from '../pluginConfig';
+import type {ScalarDirection} from '../utils/VisitorHelper';
+import {VisitorHelper} from '../utils/VisitorHelper';
 import type {SchemaVisitor} from '../visitor/SchemaVisitor';
-import type {ScalarDirection} from '../visitor/Visitor';
-import {Visitor} from '../visitor/Visitor';
 
 export abstract class BaseSchemaValidator implements SchemaVisitor {
   protected importTypes: string[] = [];
@@ -19,7 +19,7 @@ export abstract class BaseSchemaValidator implements SchemaVisitor {
     protected config: ValidatorPluginConfig
   ) {}
   createVisitor(scalarDirection: ScalarDirection) {
-    return new Visitor(scalarDirection, this.schema, this.config);
+    return new VisitorHelper(scalarDirection, this.schema, this.config);
   }
 
   buildImports(): string[] {
@@ -38,9 +38,9 @@ export abstract class BaseSchemaValidator implements SchemaVisitor {
 
   protected buildObjectTypeDefinitionArguments(
     node: ObjectTypeDefinitionNode,
-    visitor: Visitor
+    visitor: VisitorHelper
   ) {
-    return visitor.buildArgumentsSchemaBlock(node, (typeName, field) => {
+    return visitor.buildFieldArgumentsSchemaBlock(node, (typeName, field) => {
       this.importTypes.push(typeName);
       return this.buildInputFields(field.arguments ?? [], visitor, typeName);
     });
@@ -52,7 +52,7 @@ export abstract class BaseSchemaValidator implements SchemaVisitor {
   protected abstract importValidationSchema(): string;
   protected abstract buildInputFields(
     fields: readonly (FieldDefinitionNode | InputValueDefinitionNode)[],
-    visitor: Visitor,
+    visitor: VisitorHelper,
     name: string
   ): string;
 

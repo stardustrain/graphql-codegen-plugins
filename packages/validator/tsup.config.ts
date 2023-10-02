@@ -6,5 +6,4 @@ export default defineConfig({
   outDir: 'dist',
   format: ['cjs'],
   target: 'es2015',
-  // dts: true,
 });

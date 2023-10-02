@@ -11,7 +11,7 @@ import {isNil} from 'lodash';
 import {FieldType} from './FieldType';
 import type {ValidatorPluginConfig} from '../../pluginConfig';
 import {isNonNullType} from '../../utils/graphql';
-import type {Visitor} from '../../visitor/Visitor';
+import type {VisitorHelper} from '../../utils/VisitorHelper';
 import {BaseSchemaValidator} from '../BaseSchemaValidator';
 
 export class YupSchemaValidator extends BaseSchemaValidator {
@@ -93,7 +93,9 @@ export class YupSchemaValidator extends BaseSchemaValidator {
         const visitor = this.createVisitor('output');
         const name = visitor.convertName(node.name.value);
         this.addEnumDeclaration(name);
-        const enumName = visitor.getNameNodeConverter(node.name)?.convertName();
+        const enumName = visitor
+          .makeNameNodeConverter(node.name)
+          ?.convertName();
         const enumValues = node.values?.map(value => value.name.value);
 
         if (isNil(enumName) || isNil(enumValues)) {
@@ -137,7 +139,7 @@ export class YupSchemaValidator extends BaseSchemaValidator {
 
   protected override buildInputFields(
     fields: readonly (FieldDefinitionNode | InputValueDefinitionNode)[],
-    visitor: Visitor,
+    visitor: VisitorHelper,
     name: string
   ): string {
     const shape = fields.map(field => {
@@ -156,7 +158,7 @@ export class YupSchemaValidator extends BaseSchemaValidator {
     visitor,
     field,
   }: {
-    visitor: Visitor;
+    visitor: VisitorHelper;
     field: InputValueDefinitionNode | FieldDefinitionNode;
   }) {
     const result = this.fieldType.generateYupSchema({

@@ -7,13 +7,13 @@ import type {
   ObjectTypeDefinitionNode,
 } from 'graphql';
 import {specifiedScalarTypes} from 'graphql';
-import {isNil} from 'lodash';
+import {isEmpty, isNil} from 'lodash';
 
 import type {ValidatorPluginConfig} from '../pluginConfig';
 
 export type ScalarDirection = 'input' | 'output' | 'both';
 
-export class Visitor extends TsVisitor {
+export class VisitorHelper extends TsVisitor {
   constructor(
     private readonly scalarDirection: ScalarDirection,
     private readonly schema: GraphQLSchema,
@@ -26,7 +26,7 @@ export class Visitor extends TsVisitor {
     return this.schema.getType(name);
   }
 
-  getNameNodeConverter(node: NameNode) {
+  makeNameNodeConverter(node: NameNode) {
     const graphqlNamedType = this.getTypeByName(node.value);
     const astNode = graphqlNamedType?.astNode;
 
@@ -40,12 +40,6 @@ export class Visitor extends TsVisitor {
     };
   }
 
-  private isPrimitiveType(
-    astNode?: GraphQLNamedType['astNode']
-  ): astNode is undefined | null {
-    return isNil(astNode);
-  }
-
   getScalarType(scalarName: string) {
     if (this.scalarDirection === 'both') {
       return null;
@@ -54,19 +48,7 @@ export class Visitor extends TsVisitor {
     return this.scalars[scalarName][this.scalarDirection];
   }
 
-  public shouldEmitAsNotAllowEmptyString(name: string): boolean {
-    const typ = this.getTypeByName(name);
-    if (
-      typ?.astNode?.kind !== 'ScalarTypeDefinition' &&
-      !this.isSpecifiedScalarName(name)
-    ) {
-      return false;
-    }
-    const tsType = this.getScalarType(name);
-    return tsType === 'string';
-  }
-
-  buildArgumentsSchemaBlock(
+  buildFieldArgumentsSchemaBlock(
     node: ObjectTypeDefinitionNode,
     callback: (typeName: string, field: FieldDefinitionNode) => string
   ) {
@@ -75,8 +57,8 @@ export class Visitor extends TsVisitor {
         field => field.arguments && field.arguments.length > 0
       ) ?? [];
 
-    if (fieldsWithArguments.length === 0) {
-      return undefined;
+    if (isEmpty(fieldsWithArguments)) {
+      return null;
     }
 
     return fieldsWithArguments
@@ -93,6 +75,26 @@ export class Visitor extends TsVisitor {
         return callback(name, field);
       })
       .join('\n');
+  }
+
+  shouldPreventEmptyString(name: string): boolean {
+    const nameNodeType = this.getTypeByName(name);
+
+    if (
+      nameNodeType?.astNode?.kind !== 'ScalarTypeDefinition' &&
+      !this.isSpecifiedScalarName(name)
+    ) {
+      return false;
+    }
+
+    const tsType = this.getScalarType(name);
+    return tsType === 'string';
+  }
+
+  private isPrimitiveType(
+    astNode?: GraphQLNamedType['astNode']
+  ): astNode is undefined | null {
+    return isNil(astNode);
   }
 
   private isSpecifiedScalarName(scalarName: string) {

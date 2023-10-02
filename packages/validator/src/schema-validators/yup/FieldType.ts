@@ -9,7 +9,7 @@ import {
   isNamedType,
   isNonNullType,
 } from '../../utils/graphql';
-import type {Visitor} from '../../visitor/Visitor';
+import type {VisitorHelper} from '../../utils/VisitorHelper';
 
 export class FieldType {
   private readonly validatorPluginConfig: ValidatorPluginConfig;
@@ -23,7 +23,7 @@ export class FieldType {
     typeNode,
     parentType,
   }: {
-    visitor: Visitor;
+    visitor: VisitorHelper;
     typeNode: TypeNode;
     parentType?: TypeNode;
   }): string {
@@ -69,14 +69,14 @@ export class FieldType {
     typeNode,
     parentType,
   }: {
-    visitor: Visitor;
+    visitor: VisitorHelper;
     typeNode: NamedTypeNode;
     parentType?: TypeNode;
   }) {
     const result = this.convertNameNode({visitor, node: typeNode.name});
 
     if (isNonNullType(parentType)) {
-      const flag = visitor.shouldEmitAsNotAllowEmptyString(typeNode.name.value)
+      const flag = visitor.shouldPreventEmptyString(typeNode.name.value)
         ? 'required'
         : 'nonNullable';
       return `${result}.${flag}()`;
@@ -91,8 +91,14 @@ export class FieldType {
     return `${result}.nullable()`;
   }
 
-  private convertNameNode({visitor, node}: {visitor: Visitor; node: NameNode}) {
-    const converter = visitor.getNameNodeConverter(node);
+  private convertNameNode({
+    visitor,
+    node,
+  }: {
+    visitor: VisitorHelper;
+    node: NameNode;
+  }) {
+    const converter = visitor.makeNameNodeConverter(node);
 
     if (isNil(converter)) {
       return this.generatePrimitiveTypeYupSchema({
@@ -108,7 +114,7 @@ export class FieldType {
     visitor,
     scalarName,
   }: {
-    visitor: Visitor;
+    visitor: VisitorHelper;
     scalarName: string;
   }): string {
     if (this.validatorPluginConfig.scalarSchemas?.[scalarName]) {
