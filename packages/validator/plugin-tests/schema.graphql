@@ -18,3 +18,5 @@ enum PostType {
   COMMENT
   BLOG
 }
+
+union Content = User | Post
