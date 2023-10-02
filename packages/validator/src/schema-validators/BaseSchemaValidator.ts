@@ -5,7 +5,7 @@ import type {
   ObjectTypeDefinitionNode,
 } from 'graphql';
 
-import type {ValidatorPluginConfig} from '../config';
+import type {ValidatorPluginConfig} from '../pluginConfig';
 import type {SchemaVisitor} from '../visitor/SchemaVisitor';
 import type {ScalarDirection} from '../visitor/Visitor';
 import {Visitor} from '../visitor/Visitor';

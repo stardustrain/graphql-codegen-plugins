@@ -1,15 +1,15 @@
 import {DeclarationBlock, indent} from '@graphql-codegen/visitor-plugin-common';
-import {
-  type EnumTypeDefinitionNode,
-  type FieldDefinitionNode,
-  type GraphQLSchema,
-  type InputObjectTypeDefinitionNode,
-  type InputValueDefinitionNode,
+import type {
+  EnumTypeDefinitionNode,
+  FieldDefinitionNode,
+  GraphQLSchema,
+  InputObjectTypeDefinitionNode,
+  InputValueDefinitionNode,
 } from 'graphql';
 import {isNil} from 'lodash';
 
 import {FieldType} from './FieldType';
-import type {ValidatorPluginConfig} from '../../config';
+import type {ValidatorPluginConfig} from '../../pluginConfig';
 import {isNonNullType} from '../../utils/graphql';
 import type {Visitor} from '../../visitor/Visitor';
 import {BaseSchemaValidator} from '../BaseSchemaValidator';

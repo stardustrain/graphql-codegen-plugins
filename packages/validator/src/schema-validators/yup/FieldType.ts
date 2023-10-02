@@ -2,7 +2,7 @@ import type {NameNode, NamedTypeNode, TypeNode} from 'graphql';
 import {Kind} from 'graphql';
 import {isNil} from 'lodash';
 
-import type {ValidatorPluginConfig} from '../../config';
+import type {ValidatorPluginConfig} from '../../pluginConfig';
 import {
   isInput,
   isListType,
