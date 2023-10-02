@@ -4,7 +4,7 @@ import {visit} from 'graphql';
 
 import {generateSchemaAST} from './generateSchemaAST';
 import type {ValidatorPluginConfig} from './pluginConfig';
-import {YupSchemaValidator} from './schema-validators/yup/YupSchemaValidator';
+import {YupSchemaValidator} from './validator-builder/yup/YupSchemaValidator';
 
 export const plugin: PluginFunction<ValidatorPluginConfig> = (
   schema,
