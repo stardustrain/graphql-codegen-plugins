@@ -2,8 +2,8 @@ import type {PluginFunction} from '@graphql-codegen/plugin-helpers';
 import type {GraphQLSchema} from 'graphql';
 import {visit} from 'graphql';
 
-import type {ValidatorPluginConfig} from './config';
 import {generateSchemaAST} from './generateSchemaAST';
+import type {ValidatorPluginConfig} from './pluginConfig';
 import {YupSchemaValidator} from './schema-validators/yup/YupSchemaValidator';
 
 export const plugin: PluginFunction<ValidatorPluginConfig> = (
@@ -36,6 +36,8 @@ const getSchemaVisitor = (
   switch (validator) {
     case 'yup':
       return new YupSchemaValidator(graphqlSchema, config);
+    case 'zod':
+      throw new Error('Not implemented yet');
     default:
       throw new Error(`Unsupported validator: ${validator}`);
   }

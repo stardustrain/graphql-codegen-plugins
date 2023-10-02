@@ -9,7 +9,7 @@ import type {
 import {specifiedScalarTypes} from 'graphql';
 import {isNil} from 'lodash';
 
-import type {ValidatorPluginConfig} from '../config';
+import type {ValidatorPluginConfig} from '../pluginConfig';
 
 export type ScalarDirection = 'input' | 'output' | 'both';
 
