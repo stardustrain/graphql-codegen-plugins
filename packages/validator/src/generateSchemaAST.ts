@@ -28,6 +28,9 @@ export const generateSchemaAST = ({
   };
 };
 
+/**
+ * @NOTE: Enum이 먼저 선언되고 Union이 나중에 선언되기 위함
+ */
 function sortASTNodes(ast: DocumentNode) {
   const clonedAST = cloneDeep(ast);
   const preDefinedDefinitions = clonedAST.definitions.filter(

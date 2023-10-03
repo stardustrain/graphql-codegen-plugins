@@ -4,7 +4,7 @@ import {visit} from 'graphql';
 
 import {generateSchemaAST} from './generateSchemaAST';
 import type {ValidatorPluginConfig} from './pluginConfig';
-import {YupSchemaValidator} from './validator-builder/yup/YupSchemaValidator';
+import {YupSchemaBuilder} from './validator-builder/yup/YupSchemaBuilder';
 
 export const plugin: PluginFunction<ValidatorPluginConfig> = (
   schema,
@@ -16,7 +16,7 @@ export const plugin: PluginFunction<ValidatorPluginConfig> = (
     config,
   });
 
-  const visitor = getSchemaVisitor(graphqlSchema, config);
+  const visitor = getSchemaBuilder(graphqlSchema, config);
   const result = visit(ast, visitor);
 
   return {
@@ -27,7 +27,7 @@ export const plugin: PluginFunction<ValidatorPluginConfig> = (
   };
 };
 
-const getSchemaVisitor = (
+const getSchemaBuilder = (
   graphqlSchema: GraphQLSchema,
   config: ValidatorPluginConfig
 ) => {
@@ -35,7 +35,7 @@ const getSchemaVisitor = (
 
   switch (validator) {
     case 'yup':
-      return new YupSchemaValidator(graphqlSchema, config);
+      return new YupSchemaBuilder(graphqlSchema, config);
     case 'zod':
       throw new Error('Not implemented yet');
     default:

@@ -10,22 +10,18 @@ import {isNil} from 'lodash';
 
 import {maybeLazy} from './utils';
 import {YupFieldTypeSchemaBuilder} from './YupFieldTypeSchemaBuilder';
-import {EnumDeclarationBuilder} from '../../builder/EnumDeclarationBuilder';
 import type {ValidatorPluginConfig} from '../../pluginConfig';
 import {isNonNullType} from '../../utils/graphql';
 import type {VisitorHelper} from '../../utils/VisitorHelper';
 import {BaseBuilder} from '../BaseBuilder';
 
-export class YupSchemaValidator extends BaseBuilder {
-  private readonly enumDeclarationBuilder: EnumDeclarationBuilder;
-
+export class YupSchemaBuilder extends BaseBuilder {
   constructor(schema: GraphQLSchema, config: ValidatorPluginConfig) {
     super({
       schema,
       config,
       schemaBuilder: new YupFieldTypeSchemaBuilder({config}),
     });
-    this.enumDeclarationBuilder = new EnumDeclarationBuilder();
   }
 
   override importValidationLibraryPhrase(): string {

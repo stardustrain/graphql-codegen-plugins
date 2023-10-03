@@ -9,6 +9,7 @@ import type {
 } from 'graphql';
 
 import type {BaseFieldTypeSchemaBuilder} from '../builder/BaseFieldTypeSchemaBuilder';
+import {EnumDeclarationBuilder} from '../builder/EnumDeclarationBuilder';
 import type {ValidatorPluginConfig} from '../pluginConfig';
 import type {ScalarDirection} from '../utils/VisitorHelper';
 import {VisitorHelper} from '../utils/VisitorHelper';
@@ -18,6 +19,7 @@ export abstract class BaseBuilder {
   protected readonly schema: GraphQLSchema;
   protected readonly config: ValidatorPluginConfig;
   protected readonly schemaBuilder: BaseFieldTypeSchemaBuilder;
+  protected readonly enumDeclarationBuilder: EnumDeclarationBuilder;
 
   constructor({
     schema,
@@ -31,6 +33,7 @@ export abstract class BaseBuilder {
     this.schema = schema;
     this.config = config;
     this.schemaBuilder = schemaBuilder;
+    this.enumDeclarationBuilder = new EnumDeclarationBuilder();
   }
 
   createVisitor(scalarDirection: ScalarDirection) {
